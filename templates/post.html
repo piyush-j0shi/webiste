@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
     <title>{{ post.title }} - Log</title>
 </head>
+
 <body>
     <center>
         <h1>LOG</h1>
@@ -13,18 +15,18 @@
     <hr>
 
     <center>
-<p>
-    <a href="/">HOME</a> |
-    <a href="/new">NEW POST</a> |
-    <a href="/about">ABOUT</a> |
-    {% if current_user %}
-        <span>Welcome, {{ current_user.username }}</span> |
-        <a href="/logout">LOGOUT</a>
-    {% else %}
-        <a href="/login">LOGIN</a> |
-        <a href="/signup">SIGNUP</a>
-    {% endif %}
-</p>
+        <p>
+            <a href="/">HOME</a> |
+            <a href="/new">NEW POST</a> |
+            <a href="/about">ABOUT</a> |
+            {% if current_user %}
+            <span>Welcome, {{ current_user.username }}</span> |
+            <a href="/logout">LOGOUT</a>
+            {% else %}
+            <a href="/login">LOGIN</a> |
+            <a href="/signup">SIGNUP</a>
+            {% endif %}
+        </p>
     </center>
 
     <hr>
@@ -32,7 +34,7 @@
     <center>
         <pre>
 ╔═══════════════════════════════════════════════════════════════╗
-║                        LOADING POST...                        ║
+║                        LOADING POST                           ║
 ╚═══════════════════════════════════════════════════════════════╝
         </pre>
     </center>
@@ -69,13 +71,58 @@
         <h2>&gt;&gt; ADMIN CONTROLS &lt;&lt;</h2>
         <p>
             <a href="/post/{{ post.id }}/edit">EDIT POST</a> |
-            <form action="/post/{{ post.id }}/delete" method="post" style="display:inline;">
-                <button type="submit" onclick="return confirm('Are you sure you want to delete this post?');" style="background:none; border:none; color:blue; cursor:pointer; text-decoration:underline;">
-                    DELETE POST
-                </button>
-            </form>
+        <form action="/post/{{ post.id }}/delete" method="post" style="display:inline;">
+            <button type="submit" onclick="return confirm('Are you sure you want to delete this post?');"
+                style="background:none; border:none; color:blue; cursor:pointer; text-decoration:underline;">
+                DELETE POST
+            </button>
+        </form>
         </p>
     </center>
+    {% endif %}
+
+    <hr>
+    <h2>&gt;&gt; COMMENTS</h2>
+    <table border="1" width="100%">
+        {% if comments %}
+        {% for comment in comments %}
+        <tr>
+            <td>
+                <p><strong>{{ comment.owner.username }}</strong> <small>({{ comment.created_at.strftime('%Y-%m-%d
+                        %H:%M') }})</small></p>
+                <p>{{ comment.content }}</p>
+
+                {% if current_user and current_user.id == comment.owner_id %}
+                <a href="/comment/{{ comment.id }}/edit">EDIT </a> |
+                <form action="/comment/{{ comment.id }}/delete" method="post" style="display:inline;">
+                    <button type="submit" onclick="return confirm('Are you sure you want to delete this comment?');"
+                        style="background:none; border:none; color:red; cursor:pointer; text-decoration:underline; padding:0; font-size:small;">
+                        DELETE
+                    </button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <td>
+                <p>No comments yet. Be the first to comment!</p>
+            </td>
+        </tr>
+        {% endif %}
+    </table>
+
+    {% if current_user %}
+    <hr>
+    <h3>&gt;&gt; LEAVE A COMMENT</h3>
+    <form action="/post/{{ post.id }}/comment" method="post">
+        <textarea name="content" rows="4" cols="80" required placeholder="Write your comment here..."></textarea>
+        <br><br>
+        <input type="submit" value="&gt;&gt; SUBMIT COMMENT &lt;&lt;">
+    </form>
+    {% else %}
+    <p><a href="/login">Log in</a> to leave a comment.</p>
     {% endif %}
 
     <br><br>
@@ -90,13 +137,10 @@
 
     <center>
         <pre>
-    ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-    ░ END OF POST █ THANK YOU FOR READING ░
-    ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
         </pre>
         <p><small>Log 2024 | Post ID: {{ post.id }}</small></p>
     </center>
 
 </body>
-</html>
 
+</html>

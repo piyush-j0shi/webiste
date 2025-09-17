@@ -117,9 +117,19 @@ async def get_post(request: Request, post_id: int, db: Session = Depends(get_db)
     post = crud.get_post_by_id(db, post_id)
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
-    post_dict = post.to_dict()
-    return templates.TemplateResponse("post.html", {"request": request, "post": post_dict, "current_user": current_user})
 
+    comments = crud.get_comments_by_post_id(db, post_id)
+    
+    post_dict = post.to_dict()
+    return templates.TemplateResponse(
+        "post.html", 
+        {
+            "request": request, 
+            "post": post_dict, 
+            "comments": comments, 
+            "current_user": current_user
+        }
+    )
 @app.get("/new", response_class=HTMLResponse)
 async def new_post_form(request: Request):
     return templates.TemplateResponse("new_post.html", {"request": request})
@@ -186,3 +196,61 @@ async def logout():
     response = RedirectResponse(url="/", status_code=303)
     response.delete_cookie(key="access_token")
     return response
+
+@app.post("/post/{post_id}/comment")
+async def post_comment(
+    post_id: int,
+    content: str = Form(...),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    crud.create_comment(db=db, content=content, post_id=post_id, owner_id=current_user.id)
+    return RedirectResponse(url=f"/post/{post_id}", status_code=303)
+
+@app.post("/comment/{comment_id}/delete")
+async def delete_comment(
+    comment_id: int, 
+    db: Session = Depends(get_db), 
+    current_user: User = Depends(get_current_user)
+):
+    comment = crud.get_comment_by_id(db, comment_id)
+    if not comment:
+        raise HTTPException(status_code=404, detail="Comment not found")
+    if comment.owner_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized to delete this comment")
+    
+    post_id = comment.post_id
+    crud.delete_comment(db, comment_id=comment_id)
+    return RedirectResponse(url=f"/post/{post_id}", status_code=303)
+
+@app.get("/comment/{comment_id}/edit", response_class=HTMLResponse)
+async def edit_comment_form(
+    comment_id: int,
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    comment = crud.get_comment_by_id(db, comment_id)
+    if not comment:
+        raise HTTPException(status_code=404, detail="Comment not found")
+    if comment.owner_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized to edit this comment")
+
+    return templates.TemplateResponse("edit_comment.html", {"request": request, "comment": comment})
+
+
+@app.post("/comment/{comment_id}/edit")
+async def edit_comment(
+    comment_id: int,
+    content: str = Form(...),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    comment = crud.get_comment_by_id(db, comment_id)
+    if not comment:
+        raise HTTPException(status_code=404, detail="Comment not found")
+    if comment.owner_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized to edit this comment")
+
+    crud.update_comment(db, comment_id=comment_id, content=content)
+    return RedirectResponse(url=f"/post/{comment.post_id}", status_code=303)

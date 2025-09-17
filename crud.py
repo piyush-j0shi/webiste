@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import BlogPost, User
+from models import BlogPost, User, Comment
 from typing import List, Optional
 import json
 from security import get_password_hash 
@@ -75,3 +75,33 @@ def delete_blog_post(db: Session, post_id: int) -> bool:
 
 def get_posts_by_author_username(db: Session, username: str) -> List[BlogPost]:
     return db.query(BlogPost).join(User).filter(User.username == username).order_by(BlogPost.created_at.desc()).all()
+
+def create_comment(db: Session, content: str, post_id: int, owner_id: int):
+    db_comment = Comment(content=content, post_id=post_id, owner_id=owner_id)
+    db.add(db_comment)
+    db.commit()
+    db.refresh(db_comment)
+    return db_comment
+
+def get_comments_by_post_id(db: Session, post_id: int) -> List[Comment]:
+    return db.query(Comment).filter(Comment.post_id == post_id).order_by(Comment.created_at.asc()).all()
+
+def get_comment_by_id(db: Session, comment_id: int) -> Optional[Comment]:
+    return db.query(Comment).filter(Comment.id == comment_id).first()
+
+def delete_comment(db: Session, comment_id: int):
+    db_comment = get_comment_by_id(db, comment_id)
+    if db_comment:
+        db.delete(db_comment)
+        db.commit()
+        return True
+    return False
+
+def update_comment(db: Session, comment_id: int, content: str) -> Optional[Comment]:
+    db_comment = get_comment_by_id(db, comment_id)
+    if db_comment:
+        db_comment.content = content
+        db.commit()
+        db.refresh(db_comment)
+        return db_comment
+    return None
