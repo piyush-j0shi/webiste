@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Optional
 from jose import JWTError, jwt
 
-SECRET_KEY = "your-super-secret-key-that-is-very-long" # Change this!
+SECRET_KEY = "I-am-not-doing-this" 
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
