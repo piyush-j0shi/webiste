@@ -1,24 +1,21 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import Base
+from sqlalchemy.ext.declarative import declarative_base
 
-# SQLite database URL
 DATABASE_URL = "sqlite:///./blog.db"
 
-# Create engine
 engine = create_engine(
-    DATABASE_URL, 
-    connect_args={"check_same_thread": False}  # Only needed for SQLite
+    DATABASE_URL,
+    connect_args={"check_same_thread": False}  
 )
 
-# Create session factory
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# Create tables
+Base = declarative_base()
+
 def create_tables():
     Base.metadata.create_all(bind=engine)
 
-# Database dependency
 def get_db():
     db = SessionLocal()
     try:

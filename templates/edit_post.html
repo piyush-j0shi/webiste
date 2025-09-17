@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Post - Log</title>
+</head>
+<body>
+    <center>
+        <h1>LOG</h1>
+        <h3>POST EDITING MODE</h3>
+    </center>
+    <hr>
+    <center>
+        <p>
+            <a href="/">HOME</a> | <a href="/new">NEW POST</a> | <a href="/about">ABOUT</a>
+        </p>
+    </center>
+    <hr>
+    <table border="2" width="100%">
+        <tr>
+            <td>
+                <center><h2>&gt;&gt; EDITING BLOG ENTRY</h2></center>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <form action="/post/{{ post.id }}/edit" method="post">
+                    <table width="100%">
+                        <tr>
+                            <td>
+                                <p><strong>POST TITLE:</strong></p>
+                                <input type="text" name="title" size="80" required value="{{ post.title }}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <p><strong>TAGS:</strong></p>
+                                <input type="text" name="tags" size="80" value="{{ post.tags_list|join(', ') }}">
+                                <br><small>Comma-separated tags (optional)</small>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <p><strong>POST CONTENT:</strong></p>
+                                <textarea name="content" rows="15" cols="80" required>{{ post.content }}</textarea>
+                            </td>
+                        </tr>
+                    </table>
+                    <center>
+                        <p>
+                            <input type="submit" value="&gt;&gt; SAVE CHANGES &lt;&lt;">
+                            <a href="/post/{{ post.id }}">CANCEL</a>
+                        </p>
+                    </center>
+                </form>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

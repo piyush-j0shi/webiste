@@ -9,19 +9,19 @@
         <h1>LOG</h1>
         <h3>READING POST {{ post.id }}</h3>
     </center>
-    
+
     <hr>
-    
+
     <center>
         <p>
-            <a href="/">HOME</a> | 
-            <a href="/new">NEW POST</a> | 
+            <a href="/">HOME</a> |
+            <a href="/new">NEW POST</a> |
             <a href="/about">ABOUT</a>
         </p>
     </center>
-    
+
     <hr>
-    
+
     <center>
         <pre>
 ╔═══════════════════════════════════════════════════════════════╗
@@ -29,7 +29,7 @@
 ╚═══════════════════════════════════════════════════════════════╝
         </pre>
     </center>
-    
+
     <table border="2" width="100%">
         <tr>
             <td>
@@ -37,37 +37,50 @@
                 <p><strong>AUTHOR:</strong> {{ post.author }} | <strong>DATE:</strong> {{ post.created_at }}</p>
             </td>
         </tr>
-        
         <tr>
             <td>
                 <pre>{{ post.content }}</pre>
             </td>
         </tr>
-        
         {% if post.tags %}
         <tr>
             <td>
                 <p><strong>&gt; TAGS:</strong></p>
                 <p>
                     {% for tag in post.tags %}
-                    [{{ tag }}] 
+                    [{{ tag }}]
                     {% endfor %}
                 </p>
             </td>
         </tr>
         {% endif %}
     </table>
-    
+
+    {% if current_user and current_user.id == post.owner_id %}
+    <hr>
+    <center>
+        <h2>&gt;&gt; ADMIN CONTROLS &lt;&lt;</h2>
+        <p>
+            <a href="/post/{{ post.id }}/edit">EDIT POST</a> |
+            <form action="/post/{{ post.id }}/delete" method="post" style="display:inline;">
+                <button type="submit" onclick="return confirm('Are you sure you want to delete this post?');" style="background:none; border:none; color:blue; cursor:pointer; text-decoration:underline;">
+                    DELETE POST
+                </button>
+            </form>
+        </p>
+    </center>
+    {% endif %}
+
     <br><br>
-    
+
     <center>
         <p>
             <a href="/">&lt;&lt; BACK TO BLOG INDEX</a>
         </p>
     </center>
-    
+
     <hr>
-    
+
     <center>
         <pre>
     ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
@@ -76,6 +89,6 @@
         </pre>
         <p><small>Log 2024 | Post ID: {{ post.id }}</small></p>
     </center>
-    
+
 </body>
 </html>
