@@ -11,9 +11,18 @@
     </center>
     <hr>
     <center>
-        <p>
-            <a href="/">HOME</a> | <a href="/new">NEW POST</a> | <a href="/about">ABOUT</a>
-        </p>
+<p>
+    <a href="/">HOME</a> |
+    <a href="/new">NEW POST</a> |
+    <a href="/about">ABOUT</a> |
+    {% if current_user %}
+        <span>Welcome, {{ current_user.username }}</span> |
+        <a href="/logout">LOGOUT</a>
+    {% else %}
+        <a href="/login">LOGIN</a> |
+        <a href="/signup">SIGNUP</a>
+    {% endif %}
+</p>
     </center>
     <hr>
     <table border="2" width="100%">

@@ -32,6 +32,19 @@ async def get_current_user(request: Request, db: Session = Depends(get_db)):
         raise HTTPException(status_code=401, detail="User not found")
     return user
 
+async def get_current_user_optional(request: Request, db: Session = Depends(get_db)) -> Optional[User]:
+    token = request.cookies.get("access_token")
+    if not token:
+        return None
+    try:
+        payload = security.jwt.decode(token, security.SECRET_KEY, algorithms=[security.ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            return None
+        user = crud.get_user_by_username(db, username=username)
+        return user
+    except security.JWTError:
+        return None
 
 @app.on_event("startup")
 def startup_event():
@@ -53,10 +66,10 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     return {"access_token": access_token, "token_type": "bearer"}
 
 @app.get("/", response_class=HTMLResponse)
-async def home(request: Request, db: Session = Depends(get_db)):
+async def home(request: Request, db: Session = Depends(get_db), current_user: Optional[User] = Depends(get_current_user_optional)):
     posts = crud.get_all_posts(db)
     posts_dict = [post.to_dict() for post in posts]
-    return templates.TemplateResponse("index.html", {"request": request, "posts": posts_dict})
+    return templates.TemplateResponse("index.html", {"request": request, "posts": posts_dict, "current_user": current_user})
 
 @app.get("/signup", response_class=HTMLResponse)
 async def signup_form(request: Request):
@@ -100,12 +113,12 @@ async def login(
     return response
 
 @app.get("/post/{post_id}", response_class=HTMLResponse)
-async def get_post(request: Request, post_id: int, db: Session = Depends(get_db)):
+async def get_post(request: Request, post_id: int, db: Session = Depends(get_db), current_user: Optional[User] = Depends(get_current_user_optional)):
     post = crud.get_post_by_id(db, post_id)
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
     post_dict = post.to_dict()
-    return templates.TemplateResponse("post.html", {"request": request, "post": post_dict, "current_user": None}) 
+    return templates.TemplateResponse("post.html", {"request": request, "post": post_dict, "current_user": current_user})
 
 @app.get("/new", response_class=HTMLResponse)
 async def new_post_form(request: Request):
@@ -167,3 +180,9 @@ async def delete_post(post_id: int, db: Session = Depends(get_db), current_user:
 @app.get("/about", response_class=HTMLResponse)
 async def about(request: Request):
     return templates.TemplateResponse("about.html", {"request": request})
+
+@app.get("/logout")
+async def logout():
+    response = RedirectResponse(url="/", status_code=303)
+    response.delete_cookie(key="access_token")
+    return response
