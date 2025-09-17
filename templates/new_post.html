@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Create New Post - Log</title>
+</head>
+<body>
+    <center>
+        <h1>LOG</h1>
+        <h3>POST CREATION MODE</h3>
+    </center>
+    
+    <hr>
+    
+    <center>
+        <p>
+            <a href="/">HOME</a> | 
+            <a href="/new">NEW POST</a> | 
+            <a href="/about">ABOUT</a>
+        </p>
+    </center>
+    
+    <hr>
+    
+    <center>
+        <pre>
+╔═══════════════════════════════════════════════════════════════╗
+║                     COMPOSE NEW ENTRY                         ║
+╚═══════════════════════════════════════════════════════════════╝
+        </pre>
+    </center>
+    
+    <table border="2" width="100%">
+        <tr>
+            <td>
+                <center>
+                    <h2>&gt;&gt; NEW BLOG ENTRY</h2>
+                </center>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <form action="/create" method="post">
+                    <table width="100%">
+                        <tr>
+                            <td>
+                                <p><strong>POST TITLE:</strong></p>
+                                <input type="text" name="title" size="80" required>
+                                <br><small>The title of your blog post</small>
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td>
+                                <p><strong>AUTHOR NAME:</strong></p>
+                                <input type="text" name="author" size="80" required>
+                                <br><small>Who is writing this post?</small>
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td>
+                                <p><strong>TAGS:</strong></p>
+                                <input type="text" name="tags" size="80">
+                                <br><small>Comma-separated tags (optional)</small>
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td>
+                                <p><strong>POST CONTENT:</strong></p>
+                                <textarea name="content" rows="15" cols="80" required placeholder="Write your blog post content here...
+
+This text area supports plain text formatting.
+You can write multiple paragraphs and the content
+will be displayed exactly as you type it.
+
+Share your thoughts, experiences, or knowledge!"></textarea>
+                                <br><small>The main content of your blog post</small>
+                            </td>
+                        </tr>
+                    </table>
+                    
+                    <center>
+                        <p>
+                            <input type="submit" value="&gt;&gt; PUBLISH POST &lt;&lt;">
+                            <a href="/">CANCEL</a>
+                        </p>
+                    </center>
+                </form>
+            </td>
+        </tr>
+    </table>
+    
+    <hr>
+    
+    <center>
+        <pre>
+    ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+    ░ READY FOR INPUT █ START TYPING ABOVE ░
+    ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+        </pre>
+        <p><small>Log 2024 | Create Mode Active</small></p>
+    </center>
+    
+</body>
+</html>

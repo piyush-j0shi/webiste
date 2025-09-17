@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ post.title }} - Log</title>
+</head>
+<body>
+    <center>
+        <h1>LOG</h1>
+        <h3>READING POST {{ post.id }}</h3>
+    </center>
+    
+    <hr>
+    
+    <center>
+        <p>
+            <a href="/">HOME</a> | 
+            <a href="/new">NEW POST</a> | 
+            <a href="/about">ABOUT</a>
+        </p>
+    </center>
+    
+    <hr>
+    
+    <center>
+        <pre>
+╔═══════════════════════════════════════════════════════════════╗
+║                        LOADING POST...                        ║
+╚═══════════════════════════════════════════════════════════════╝
+        </pre>
+    </center>
+    
+    <table border="2" width="100%">
+        <tr>
+            <td>
+                <h2>{{ post.title }}</h2>
+                <p><strong>AUTHOR:</strong> {{ post.author }} | <strong>DATE:</strong> {{ post.created_at }}</p>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <pre>{{ post.content }}</pre>
+            </td>
+        </tr>
+        
+        {% if post.tags %}
+        <tr>
+            <td>
+                <p><strong>&gt; TAGS:</strong></p>
+                <p>
+                    {% for tag in post.tags %}
+                    [{{ tag }}] 
+                    {% endfor %}
+                </p>
+            </td>
+        </tr>
+        {% endif %}
+    </table>
+    
+    <br><br>
+    
+    <center>
+        <p>
+            <a href="/">&lt;&lt; BACK TO BLOG INDEX</a>
+        </p>
+    </center>
+    
+    <hr>
+    
+    <center>
+        <pre>
+    ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+    ░ END OF POST █ THANK YOU FOR READING ░
+    ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+        </pre>
+        <p><small>Log 2024 | Post ID: {{ post.id }}</small></p>
+    </center>
+    
+</body>
+</html>
